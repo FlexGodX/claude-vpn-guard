@@ -34,6 +34,7 @@ extras/
   install-guard.sh              установка guard как LaunchAgent
   com.user.claude-hiddify-guard.plist
   com.google.Chrome.plist       опционально: WebRTC без утечки IP
+examples/                       готовые config.env для Hiddify/Tunnelblick/WireGuard
 diagnostics/
   collect.sh                    сбор диагностического отчёта
   probe-claude-desktop.md       как найдены managed-ключи/Sentry/EventLogging
@@ -76,6 +77,9 @@ sudo ./verify.sh
 `160.79.104.10` (или default route), а другие TUN-клиенты лучше остановить:
 PF не различает владельца `utun`. `VPN_PROCESS` — только проверка, что
 процесс жив; `VPN_EXPECTED_EXIT_IP` помогает поймать подмену.
+
+Готовые примеры: `examples/hiddify-tun.env`, `examples/hiddify-proxy.env`,
+`examples/tunnelblick.env`, `examples/wireguard.env`.
 
 ### Hiddify, TUN
 
