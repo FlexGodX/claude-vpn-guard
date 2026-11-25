@@ -1,0 +1,25 @@
+PF rules loaded by the installer (output of pfctl -a com.user.claude-hiddify -sr).
+
+block drop out quick on en0 inet from any to <anthropic4>
+block drop out quick on en1 inet from any to <anthropic4>
+block drop out quick on en2 inet from any to <anthropic4>
+block drop out quick on en3 inet from any to <anthropic4>
+block drop out quick on en4 inet from any to <anthropic4>
+block drop out quick on bridge0 inet from any to <anthropic4>
+block drop out quick on en0 inet6 from any to <anthropic6>
+block drop out quick on en1 inet6 from any to <anthropic6>
+block drop out quick on en2 inet6 from any to <anthropic6>
+block drop out quick on en3 inet6 from any to <anthropic6>
+block drop out quick on en4 inet6 from any to <anthropic6>
+block drop out quick on bridge0 inet6 from any to <anthropic6>
+
+Tables (from files):
+  anthropic4: 160.79.104.0/21
+  anthropic6: 2607:6bc0::/32
+
+Anchor reference in /etc/pf.conf:
+  anchor "com.user.claude-hiddify"
+  (inserted immediately before anchor "com.apple/*")
+
+Syntax check:
+  pfctl -n -f /etc/pf.conf -> rc=0

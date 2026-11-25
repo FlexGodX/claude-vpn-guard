@@ -1,0 +1,9 @@
+Claude Desktop TCP connections in TUN mode (lsof -nP -iTCP).
+
+Claude <pid> <tun-local-ip>:64000->160.79.104.10:443
+Claude <pid> <tun-local-ip>:64008->160.79.104.10:443
+Claude <pid> <tun-local-ip>:64074->160.79.104.10:443
+
+<tun-local-ip> is the local address of Hiddify's utunN.
+160.79.104.10 is api.anthropic.com.
+No direct en0 connection to Anthropic was present.

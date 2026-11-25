@@ -1,0 +1,44 @@
+== Mode ==
+Claude traffic: tun (Anthropic via utunN, default via utunN)
+
+== System proxy ==
+  HTTPEnable : 0
+  HTTPSEnable : 0
+  SOCKSEnable : 0
+
+== Hiddify path to Anthropic ==
+OK: HTTP 404 through Hiddify TUN (404 is normal for /)
+Exit IP: <vpn-exit-ip>
+Without Hiddify: disconnect the VPN and rerun this check; the direct call must fail.
+
+== pf anchor ==
+run: sudo /sbin/pfctl -a com.user.claude-hiddify -sr
+run: sudo /sbin/pfctl -a com.user.claude-hiddify -t anthropic4 -T show
+
+== Claude Desktop managed telemetry policy ==
+{
+  "disableEssentialTelemetry" => true
+  "disableNonessentialTelemetry" => true
+}
+
+== Claude Code managed settings ==
+{
+  "env": {
+    "DISABLE_TELEMETRY": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_BUG_COMMAND": "1",
+    "DO_NOT_TRACK": "1"
+  }
+}
+
+== Anthropic DNS ranges ==
+claude.ai: 160.79.104.10 inside
+api.anthropic.com: 160.79.104.10 inside
+
+== Queued Claude Code telemetry ==
+queued event files: 0
+
+== Claude processes ==
+80422 /Applications/Claude.app/Contents/MacOS/Claude
+
+Expected: Hiddify path OK, queued telemetry 0, anchor loaded.

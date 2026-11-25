@@ -1,0 +1,62 @@
+== Preflight: Hiddify mode ==
+Hiddify TUN OK (Anthropic via utunN, HTTP 404)
+Mode: tun (default route via utunN, Anthropic via utunN)
+== Installing pf anchor ==
+pfctl: Use of -f option, could result in flushing of rules
+present in the main ruleset added by the system at startup.
+See /etc/pf.conf for further details.
+
+No ALTQ support in kernel
+ALTQ related functions disabled
+pfctl: Use of -f option, could result in flushing of rules
+present in the main ruleset added by the system at startup.
+See /etc/pf.conf for further details.
+
+No ALTQ support in kernel
+ALTQ related functions disabled
+== Post-load check ==
+Hiddify path still works after PF load (HTTP 404)
+== Installing boot-time pf loader ==
+== Installing Claude Desktop managed telemetry policy ==
+== Blocking Claude Sentry telemetry ==
+blocked o1158394.ingest.us.sentry.io
+== Installing Claude Code managed settings (tun mode) ==
+== Clearing queued Claude Code telemetry ==
+removed queued telemetry for Administrator
+
+== Installed ==
+Backup: /Library/Application Support/ClaudeHiddify/backup-20261119-163842
+
+pf rules:
+No ALTQ support in kernel
+ALTQ related functions disabled
+block drop out quick on en0 inet from any to <anthropic4>
+block drop out quick on en1 inet from any to <anthropic4>
+block drop out quick on en2 inet from any to <anthropic4>
+block drop out quick on en3 inet from any to <anthropic4>
+block drop out quick on en4 inet from any to <anthropic4>
+block drop out quick on bridge0 inet from any to <anthropic4>
+block drop out quick on en0 inet6 from any to <anthropic6>
+block drop out quick on en1 inet6 from any to <anthropic6>
+block drop out quick on en2 inet6 from any to <anthropic6>
+block drop out quick on en3 inet6 from any to <anthropic6>
+block drop out quick on en4 inet6 from any to <anthropic6>
+block drop out quick on bridge0 inet6 from any to <anthropic6>
+
+Claude Desktop managed policy:
+{
+  "disableEssentialTelemetry" => true
+  "disableNonessentialTelemetry" => true
+}
+
+Claude Code managed settings:
+{
+  "env": {
+    "DISABLE_TELEMETRY": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_BUG_COMMAND": "1",
+    "DO_NOT_TRACK": "1"
+  }
+}
+
+Start Claude and run $PROJECT_DIR/verify.sh

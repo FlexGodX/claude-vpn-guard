@@ -1,0 +1,34 @@
+# Тест «без Hiddify» и инцидент с маршрутом
+
+Цель: убедиться, что прямой выход к Anthropic блокируется PF, когда Hiddify
+выключен.
+
+Использованный способ (НЕ рекомендуется повторять без необходимости):
+
+1. `route -n change -host 160.79.104.10 192.168.31.1` — принудительно
+   направить Anthropic через en0.
+2. `curl -4 --noproxy '*' -m 6 https://api.anthropic.com/` — получить
+   timeout.
+3. Удалить host-route / переподключить Hiddify.
+
+Результат проверки:
+
+```text
+route change host 160.79.104.10: gateway 192.168.31.1
+curl: (28) Connection timed out after 6004 milliseconds
+direct_en0_http=000
+```
+
+После этого host-route через en0 остался в ifscope-таблице, а packet tunnel
+был убит для проверки; Hiddify потерял маршрут. Пользователь переподключил
+Hiddify вручную, после чего:
+
+```text
+route get default -> utunN
+route get 160.79.104.10 -> utunN
+curl -4 --noproxy '*' https://api.anthropic.com/ -> HTTP 404
+curl -4 --noproxy '*' https://api.ipify.org -> <vpn-exit-ip>
+```
+
+Вывод: PF-блок работает; штатный тест — выключить/включить VPN в интерфейсе
+Hiddify, не меняя маршруты вручную.

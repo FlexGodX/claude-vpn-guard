@@ -1,0 +1,21 @@
+#!/bin/zsh
+# Load the Claude/Hiddify pf anchor at boot (LaunchDaemon).
+set -euo pipefail
+
+ANCHOR="com.user.claude-hiddify"
+ANCHOR_FILE="/etc/pf.anchors/com.user.claude-hiddify"
+PF_CONF="/etc/pf.conf"
+PFCTL="/sbin/pfctl"
+
+if [[ ! -f "$ANCHOR_FILE" ]]; then
+  echo "missing $ANCHOR_FILE" >&2
+  exit 1
+fi
+
+# macOS 27 pfctl does not support "pfctl -s anchors".  Reload the standard
+# main ruleset (which contains the anchor reference) and then load the
+# anchor content.  This is idempotent and safe at boot.
+"$PFCTL" -f "$PF_CONF"
+"$PFCTL" -a "$ANCHOR" -f "$ANCHOR_FILE"
+"$PFCTL" -E >/dev/null 2>&1 || true
+echo "claude-hiddify pf anchor loaded"

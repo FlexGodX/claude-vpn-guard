@@ -1,0 +1,16 @@
+/etc/hosts block installed by install.sh:
+
+# BEGIN claude-hiddify telemetry block
+0.0.0.0 o1158394.ingest.us.sentry.io
+# END claude-hiddify telemetry block
+
+Checks:
+  dscacheutil -q host -a name o1158394.ingest.us.sentry.io
+  -> name: o1158394.ingest.us.sentry.io
+     ip_address: 0.0.0.0
+
+  curl -sS -m 5 https://o1158394.ingest.us.sentry.io/
+  -> Failed to connect: Couldn't connect to server (000)
+
+The host is the Sentry DSN host found in
+/Applications/Claude.app/Contents/Resources/app.asar.

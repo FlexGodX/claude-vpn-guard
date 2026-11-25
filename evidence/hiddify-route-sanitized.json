@@ -1,0 +1,273 @@
+{
+  "inbounds": [
+    {
+      "type": "mixed",
+      "tag": "mixed-in127.0.0.1",
+      "listen": "127.0.0.1",
+      "listen_port": 12334,
+      "set_system_proxy": true
+    },
+    {
+      "type": "mixed",
+      "tag": "mixed-in::1",
+      "listen": "::1",
+      "listen_port": 12334
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "ip_version": 6,
+        "action": "reject"
+      },
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "ip_cidr": [
+          "10.10.34.0/24",
+          "2001:4188:2:600:10:10:34:0/120"
+        ],
+        "outbound": "select"
+      },
+      {
+        "ip_cidr": [
+          "10.0.0.0/8",
+          "172.16.0.0/12",
+          "192.168.0.0/16",
+          "127.0.0.0/8",
+          "169.254.0.0/16",
+          "224.0.0.0/4",
+          "0.0.0.0",
+          "fc00::/7",
+          "fe80::/10",
+          "::1",
+          "ff00::/8",
+          "::"
+        ],
+        "outbound": "direct §hide§"
+      },
+      {
+        "rule_set": [
+          "geosite-ru",
+          "geoip-ru"
+        ],
+        "outbound": "direct §hide§"
+      }
+    ],
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geosite-ru",
+        "url": "https://raw.githubusercontent.com/hiddify/hiddify-geo/rule-set/country/geosite-ru.srs",
+        "update_interval": "120h0m0s",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-ru",
+        "url": "https://raw.githubusercontent.com/hiddify/hiddify-geo/rule-set/country/geoip-ru.srs",
+        "update_interval": "120h0m0s",
+        "download_detour": "select"
+      }
+    ],
+    "final": "select",
+    "default_domain_resolver": {
+      "server": "dns-direct-group",
+      "strategy": "prefer_ipv4"
+    }
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "hosts",
+        "tag": "dns-static"
+      },
+      {
+        "type": "tcp",
+        "tag": "dns-remote",
+        "detour": "select",
+        "server": "8.8.8.8"
+      },
+      {
+        "type": "https",
+        "tag": "dns-remote-fallback",
+        "detour": "select",
+        "server": "8.8.8.8",
+        "tls": {
+          "enabled": true
+        }
+      },
+      {
+        "type": "https",
+        "tag": "dns-trick-direct",
+        "domain_resolver": {
+          "server": "dns-direct",
+          "strategy": "prefer_ipv4"
+        },
+        "server": "dns.cloudflare.com",
+        "tls": {
+          "enabled": true,
+          "fragment": true,
+          "fragment_fallback_delay": "300ms",
+          "record_fragment": true
+        }
+      },
+      {
+        "type": "udp",
+        "tag": "dns-direct",
+        "connect_timeout": "5s",
+        "disable_tcp_keep_alive": true,
+        "server": "1.1.1.1"
+      },
+      {
+        "type": "local",
+        "tag": "dns-local",
+        "prefer_go": true
+      },
+      {
+        "type": "tcp",
+        "tag": "dns-remote-no-warp",
+        "server": "8.8.8.8"
+      },
+      {
+        "type": "group",
+        "tag": "dns-remote-group",
+        "servers": [
+          "dns-remote",
+          "dns-remote-group-1",
+          "dns-remote-group-2",
+          "dns-remote-group-3",
+          "dns-remote-group-4",
+          "dns-remote-group-5"
+        ],
+        "mode": "sequential",
+        "ignore_ranges": [
+          "10.10.34.0/24"
+        ]
+      },
+      {
+        "type": "group",
+        "tag": "dns-direct-group",
+        "servers": [
+          "dns-direct",
+          "dns-direct-group-1",
+          "dns-direct-group-2",
+          "dns-direct-group-3",
+          "dns-direct-group-4",
+          "dns-direct-group-5"
+        ],
+        "mode": "sequential",
+        "ignore_ranges": [
+          "10.10.34.0/24"
+        ]
+      },
+      {
+        "type": "tcp",
+        "tag": "dns-remote-group-1",
+        "detour": "select",
+        "server": "1.1.1.1"
+      },
+      {
+        "type": "udp",
+        "tag": "dns-remote-group-2",
+        "detour": "select",
+        "connect_timeout": "5s",
+        "disable_tcp_keep_alive": true,
+        "server": "8.8.8.8"
+      },
+      {
+        "type": "udp",
+        "tag": "dns-remote-group-3",
+        "detour": "select",
+        "connect_timeout": "5s",
+        "disable_tcp_keep_alive": true,
+        "server": "1.1.1.1"
+      },
+      {
+        "type": "tls",
+        "tag": "dns-remote-group-4",
+        "detour": "select",
+        "server": "8.8.8.8"
+      },
+      {
+        "type": "tls",
+        "tag": "dns-remote-group-5",
+        "detour": "select",
+        "server": "1.1.1.1"
+      },
+      {
+        "type": "tcp",
+        "tag": "dns-direct-group-1",
+        "server": "1.1.1.1"
+      },
+      {
+        "type": "tls",
+        "tag": "dns-direct-group-2",
+        "server": "1.1.1.1"
+      },
+      {
+        "type": "udp",
+        "tag": "dns-direct-group-3",
+        "connect_timeout": "5s",
+        "disable_tcp_keep_alive": true,
+        "server": "8.8.8.8"
+      },
+      {
+        "type": "tcp",
+        "tag": "dns-direct-group-4",
+        "server": "8.8.8.8"
+      },
+      {
+        "type": "tls",
+        "tag": "dns-direct-group-5",
+        "server": "8.8.8.8"
+      }
+    ],
+    "rules": [
+      {
+        "domain": "api.cloudflareclient.com",
+        "server": "dns-remote-no-warp",
+        "strategy": "prefer_ipv4",
+        "rewrite_ttl": 86400
+      },
+      {
+        "domain": [
+          "api.cloudflareclient.com",
+          "captive.apple.com",
+          "cp.cloudflare.com",
+          "google.com"
+        ],
+        "server": "dns-direct-group",
+        "strategy": "prefer_ipv4",
+        "rewrite_ttl": 86400
+      },
+      {
+        "rule_set": "geosite-ru",
+        "server": "dns-direct-group",
+        "rewrite_ttl": 86400
+      },
+      {
+        "server": "dns-remote-group",
+        "strategy": "ipv4_only",
+        "rewrite_ttl": 86400
+      }
+    ],
+    "final": "dns-remote-group",
+    "disable_expire": true,
+    "independent_cache": true
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "path": "data/clash.db"
+    },
+    "clash_api": {
+      "external_controller": "127.0.0.1:16756"
+    }
+  }
+}

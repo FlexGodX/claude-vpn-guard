@@ -1,0 +1,10 @@
+Anthropic IPv6 range (whois 2607:6bc0::10)
+
+NetRange:       2607:6BC0:: - 2607:6BC0:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
+CIDR:           2607:6BC0::/32
+NetName:        ANTHROPIC-V6
+Organization:   Anthropic, PBC (AP-2440)
+OrgName:        Anthropic, PBC
+
+Command:
+  whois 2607:6bc0::10 | grep -Ei 'NetRange|CIDR|OrgName|Organization'

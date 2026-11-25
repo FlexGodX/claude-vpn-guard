@@ -1,0 +1,14 @@
+# Claude / Anthropic egress guard.
+#
+# Anthropic owns 160.79.104.0/21 (IPv4) and 2607:6bc0::/32 (IPv6).
+# Block direct traffic to those ranges on the physical interfaces.  VPN TUN
+# traffic (utun*) and the local proxy path (lo0) remain allowed, so Claude can
+# reach Anthropic only through the configured VPN.
+#
+# __IFACES__ is replaced by install.sh from PHYSICAL_IFACES in config.env.
+
+table <anthropic4> persist file "/etc/claude-hiddify/anthropic4.txt"
+table <anthropic6> persist file "/etc/claude-hiddify/anthropic6.txt"
+
+block drop out quick on { __IFACES__ } inet from any to <anthropic4>
+block drop out quick on { __IFACES__ } inet6 from any to <anthropic6>

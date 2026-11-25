@@ -1,0 +1,11 @@
+{
+  "env": {
+    "DISABLE_TELEMETRY": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_BUG_COMMAND": "1",
+    "DO_NOT_TRACK": "1",
+    "HTTP_PROXY": "__PROXY_URL__",
+    "HTTPS_PROXY": "__PROXY_URL__",
+    "NO_PROXY": "localhost,127.0.0.1,::1,.local"
+  }
+}
